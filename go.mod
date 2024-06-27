@@ -1,4 +1,4 @@
-module github.com/muety/json-log-exporter
+module github.com/LavenderFive/json-log-exporter
 
 go 1.21
 

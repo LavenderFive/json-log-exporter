@@ -9,8 +9,8 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/LavenderFive/json-log-exporter/config"
 	"github.com/hpcloud/tail"
-	"github.com/muety/json-log-exporter/config"
 	"github.com/prometheus/client_golang/prometheus"
 )
 

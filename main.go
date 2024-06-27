@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
-	"github.com/muety/json-log-exporter/collector"
-	"github.com/muety/json-log-exporter/config"
+	"github.com/LavenderFive/json-log-exporter/collector"
+	"github.com/LavenderFive/json-log-exporter/config"
 	"log"
 	"net"
 	"net/http"
