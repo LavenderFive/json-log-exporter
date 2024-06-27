@@ -4,3 +4,4 @@
 *.idx
 bin
 json-log-exporter
+cfg.yml

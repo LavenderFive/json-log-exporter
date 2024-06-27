@@ -3,13 +3,15 @@ package collector
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/ashwinikd/json-log-exporter/config"
-	"github.com/hpcloud/tail"
-	"github.com/prometheus/client_golang/prometheus"
 	"log"
 	"os"
 	"strconv"
+	"strings"
 	"text/template"
+
+	"github.com/hpcloud/tail"
+	"github.com/muety/json-log-exporter/config"
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 type Collector struct {
@@ -285,8 +287,41 @@ func (this *Collector) Run() {
 					continue
 				}
 
+				requests, ok := data.(map[string]interface{})["request"]
+				if !ok {
+					log.Printf("Error: 'requests' not found or unexpected type in line: %s", line.Text)
+					continue
+				}
+
+				// Assuming headers is a map[string]interface{}
+				originalHeaders, ok := requests.(map[string]interface{})["headers"].(map[string]interface{})
+				if !ok {
+					log.Printf("Error: 'headers' not found or unexpected type in line: %s", line.Text)
+					continue
+				}
+
+				// Create a temporary map to store modified keys
+				tempHeaders := make(map[string]interface{})
+
+				// Iterate over the original headers, modify the keys, and store in tempHeaders
+				for key, value := range originalHeaders {
+					modifiedKey := strings.ToLower(strings.Replace(key, "-", "_", -1))
+					tempHeaders[modifiedKey] = value
+				}
+
+				// Clear the original map
+				for key := range originalHeaders {
+					delete(originalHeaders, key)
+				}
+
+				// Copy from tempHeaders back to the original map
+				for key, value := range tempHeaders {
+					originalHeaders[key] = value
+				}
+
 				for _, m := range this.counters {
 					values := labelValues(data, m.labelValues)
+
 					inc := 1.0
 
 					if m.key != "" {
